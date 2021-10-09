@@ -11,11 +11,11 @@
 ## Sprints
 
 ### Sprint 0
-- [-] MVP
-- [-] PLAN.md
+- [x] MVP
+- [x] PLAN.md
 ### Sprint 1
-- [-] MongoDB Atlas Tutorials
-- [-] Swift Google Maps API tutorial
+- [x] MongoDB Atlas Tutorials
+- [x] Swift Google Maps API tutorial
 ### Sprint 2
 - [ ] Custom Swift DB Models 
 - [ ] User intake survey screen
