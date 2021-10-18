@@ -1,5 +1,10 @@
 package drivezero;
 
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
+import com.github.jknack.handlebars.io.TemplateLoader;
+
 import com.microsoft.azure.functions.ExecutionContext;
 import com.microsoft.azure.functions.HttpMethod;
 import com.microsoft.azure.functions.HttpRequestMessage;
@@ -13,6 +18,7 @@ import com.microsoft.azure.functions.annotation.BindingName;
 import drivezero.models.User;
 import drivezero.logic.Routes;
 
+import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -28,7 +34,7 @@ public class Function {
     public HttpResponseMessage run(
             @HttpTrigger(
                 name = "req",
-                methods = {HttpMethod.GET, HttpMethod.POST},
+                methods = {HttpMethod.GET},
                 authLevel = AuthorizationLevel.ANONYMOUS)
                 HttpRequestMessage<Optional<String>> request,
             final ExecutionContext context) {
@@ -41,8 +47,38 @@ public class Function {
         if (name == null) {
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST).body("Please pass a name on the query string or in the request body").build();
         } else {
-            return request.createResponseBuilder(HttpStatus.OK).body("Hello, " + name).build();
+            return request
+                    .createResponseBuilder(HttpStatus.OK)
+                    .body("Hello, " + name)
+                    .header("Content-Type", "text/html")
+                    .build();
         }
+    }
+
+    // /api/index
+    @FunctionName("index") // change me
+    public HttpResponseMessage example( // change me
+            @HttpTrigger(
+                    name = "req",
+                    methods = {HttpMethod.GET},
+                    authLevel = AuthorizationLevel.ANONYMOUS)
+                    HttpRequestMessage<Optional<String>> request,
+            final ExecutionContext context) throws IOException {
+        TemplateLoader loader = new ClassPathTemplateLoader("/handlebars", ".html");
+        Handlebars handlebars = new Handlebars(loader);
+        Template template = handlebars.compile("index"); // change me
+
+        // TODO
+        User person = new User();
+        person.setName("test user");
+        person.setId(1234);
+
+        String templateString = template.apply(person);
+
+        return request.createResponseBuilder(HttpStatus.OK)
+                .body(templateString)
+                .header("Content-Type", "text/html; charset=UTF-8")
+                .build();
     }
 
     @FunctionName("TriggerStringRoute")
@@ -55,7 +91,7 @@ public class Function {
             @BindingName("id") String id,
             @BindingName("name") String name,
             final ExecutionContext context) {
-        
+
         // Item list
         context.getLogger().info("Route parameters are: " + id);
 
