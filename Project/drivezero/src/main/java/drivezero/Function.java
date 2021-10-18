@@ -33,10 +33,10 @@ public class Function {
     @FunctionName("HttpExample")
     public HttpResponseMessage run(
             @HttpTrigger(
-                name = "req",
-                methods = {HttpMethod.GET},
-                authLevel = AuthorizationLevel.ANONYMOUS)
-                HttpRequestMessage<Optional<String>> request,
+                    name = "req",
+                    methods = {HttpMethod.GET},
+                    authLevel = AuthorizationLevel.ANONYMOUS)
+                    HttpRequestMessage<Optional<String>> request,
             final ExecutionContext context) {
         context.getLogger().info("Java HTTP trigger processed a request.");
 
@@ -58,12 +58,12 @@ public class Function {
     // /api/index
     @FunctionName("index") // change me
     public HttpResponseMessage example( // change me
-            @HttpTrigger(
-                    name = "req",
-                    methods = {HttpMethod.GET},
-                    authLevel = AuthorizationLevel.ANONYMOUS)
-                    HttpRequestMessage<Optional<String>> request,
-            final ExecutionContext context) throws IOException {
+                                        @HttpTrigger(
+                                                name = "req",
+                                                methods = {HttpMethod.GET},
+                                                authLevel = AuthorizationLevel.ANONYMOUS)
+                                                HttpRequestMessage<Optional<String>> request,
+                                        final ExecutionContext context) throws IOException {
         TemplateLoader loader = new ClassPathTemplateLoader("/handlebars", ".html");
         Handlebars handlebars = new Handlebars(loader);
         Template template = handlebars.compile("index"); // change me
@@ -83,11 +83,11 @@ public class Function {
 
     @FunctionName("TriggerStringRoute")
     public HttpResponseMessage routeParam(
-            @HttpTrigger(name = "req", 
-                methods = {HttpMethod.GET}, 
-                authLevel = AuthorizationLevel.ANONYMOUS,
-                route = "trigger/{id}/{name=EMPTY}") // name is optional and defaults to EMPTY
-            HttpRequestMessage<Optional<String>> request,
+            @HttpTrigger(name = "req",
+                    methods = {HttpMethod.GET},
+                    authLevel = AuthorizationLevel.ANONYMOUS,
+                    route = "trigger/{id}/{name=EMPTY}") // name is optional and defaults to EMPTY
+                    HttpRequestMessage<Optional<String>> request,
             @BindingName("id") String id,
             @BindingName("name") String name,
             final ExecutionContext context) {
@@ -98,18 +98,42 @@ public class Function {
         // Convert and display
         if (id == null) {
             return request.createResponseBuilder(HttpStatus.BAD_REQUEST)
-                            .body("Document not found.")
-                            .build();
-        } 
-        else {
+                    .body("Document not found.")
+                    .build();
+        } else {
             // return JSON from to the client
             // Generate document
-            final String jsonDocument = "{\"id\":\"" + id + "\", " + 
-                                            "\"description\": \"" + name + "\"}";
+            final String jsonDocument = "{\"id\":\"" + id + "\", " +
+                    "\"description\": \"" + name + "\"}";
             return request.createResponseBuilder(HttpStatus.OK)
-                            .header("Content-Type", "application/json")
-                            .body(jsonDocument)
-                            .build();
+                    .header("Content-Type", "application/json")
+                    .body(jsonDocument)
+                    .build();
         }
+    }
+
+    @FunctionName("usersurvey") // change me
+    public HttpResponseMessage userSurvey( // change me
+                                           @HttpTrigger(
+                                                   name = "req",
+                                                   methods = {HttpMethod.GET},
+                                                   authLevel = AuthorizationLevel.ANONYMOUS)
+                                                   HttpRequestMessage<Optional<String>> request,
+                                           final ExecutionContext context) throws IOException {
+        TemplateLoader loader = new ClassPathTemplateLoader("/handlebars", ".html");
+        Handlebars handlebars = new Handlebars(loader);
+        Template template = handlebars.compile("usersurvey"); // change me
+
+        // TODO
+        User person = new User();
+        person.setName("test user");
+        person.setId(1234);
+
+        String templateString = template.apply(person);
+
+        return request.createResponseBuilder(HttpStatus.OK)
+                .body(templateString)
+                .header("Content-Type", "text/html; charset=UTF-8")
+                .build();
     }
 }
