@@ -1,5 +1,6 @@
 package drivezero;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
@@ -15,6 +16,7 @@ import com.microsoft.azure.functions.annotation.FunctionName;
 import com.microsoft.azure.functions.annotation.HttpTrigger;
 import com.microsoft.azure.functions.annotation.BindingName;
 
+import drivezero.models.Location;
 import drivezero.models.User;
 import drivezero.logic.Routes;
 
@@ -25,6 +27,8 @@ import java.util.Optional;
  * Azure Functions with HTTP Trigger.
  */
 public class Function {
+        public static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     /**
      * This function listens at endpoint "/api/HttpExample". Two ways to invoke it using "curl" command in bash:
      * 1. curl -d "HTTP Body" {your host}/api/HttpExample
@@ -132,6 +136,48 @@ public class Function {
         String templateString = template.apply(person);
 
         return request.createResponseBuilder(HttpStatus.OK)
+                .body(templateString)
+                .header("Content-Type", "text/html; charset=UTF-8")
+                .build();
+    }
+
+    // /api/index
+    @FunctionName("createuser") // change me
+    public HttpResponseMessage example( // change me
+                                        @HttpTrigger(
+                                                name = "req",
+                                                methods = {HttpMethod.POST},
+                                                authLevel = AuthorizationLevel.ANONYMOUS)
+                                                HttpRequestMessage<Optional<String>> request,
+                                        final ExecutionContext context) throws IOException {
+
+        String json = request.getBody().get();
+        User usr = OBJECT_MAPPER.readValue(json, User.class);
+
+        // put into database here
+        return request.createResponseBuilder(HttpStatus.CREATED)
+                .body(templateString)
+                .header("Content-Type", "text/html; charset=UTF-8")
+                .build();
+    }
+
+    // /api/index
+    @FunctionName("getdistance") // change me
+    public HttpResponseMessage example( // change me
+                                        @HttpTrigger(
+                                                name = "req",
+                                                methods = {HttpMethod.POST},
+                                                authLevel = AuthorizationLevel.ANONYMOUS)
+                                                HttpRequestMessage<Optional<String>> request,
+                                        final ExecutionContext context) throws IOException {
+
+        String json = request.getBody().get();
+        Location loc = OBJECT_MAPPER.readValue(json, Location.class);
+
+        new Routes().getDistance(loc.getAddress());
+
+        // put into database here
+        return request.createResponseBuilder(HttpStatus.CREATED)
                 .body(templateString)
                 .header("Content-Type", "text/html; charset=UTF-8")
                 .build();

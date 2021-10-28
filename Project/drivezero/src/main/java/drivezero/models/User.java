@@ -27,7 +27,7 @@ public class User {
     private String carUse;
 
     @Getter @Setter
-    private String carMiles;
+    private int carMiles;
 
     @Getter @Setter
     private double goal;
