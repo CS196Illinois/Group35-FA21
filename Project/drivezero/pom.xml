@@ -51,7 +51,6 @@
             <artifactId>okhttp</artifactId>
             <version>4.9.1</version>
         </dependency>
-
         <!-- Test -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

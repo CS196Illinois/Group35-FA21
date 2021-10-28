@@ -1,0 +1,8 @@
+{
+    "azureFunctions.javaBuildTool": "maven",
+    "azureFunctions.deploySubpath": "drivezero/target/azure-functions/drivezero-20211014172613618",
+    "azureFunctions.projectLanguage": "Java",
+    "azureFunctions.projectRuntime": "~3",
+    "debug.internalConsoleOptions": "neverOpen",
+    "azureFunctions.preDeployTask": "package (functions)"
+}
