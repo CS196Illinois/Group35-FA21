@@ -177,6 +177,7 @@ public class Function {
         new Routes().getDistance(loc.getAddress());
 
         // put into database here
+        Object templateString = new Object();
         return request.createResponseBuilder(HttpStatus.CREATED)
                 .body(templateString)
                 .header("Content-Type", "text/html; charset=UTF-8")

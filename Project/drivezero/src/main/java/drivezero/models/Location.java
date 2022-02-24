@@ -8,4 +8,8 @@ public class Location {
     private String address;
 
     Location() {}
+
+    public String getAddress() {
+        return address;
+    }
 }
